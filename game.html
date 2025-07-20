@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Memory Match Game</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="game-screen">
+    <h2 id="timer">⏱️ Time: 0s</h2>
+    <div class="grid" id="gameGrid"></div>
+    <button id="restartBtn">🔄 Restart</button>
+  </div>
+
+  <!-- Game Finish Popup -->
+  <div id="finishPopup">
+    <h2>🎉 You Did It!</h2>
+    <p id="finalTime"></p>
+    <button onclick="restartGame()">Play Again</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
