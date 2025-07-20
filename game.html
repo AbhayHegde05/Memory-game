@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Memory Game</title>
+  <title>Play Memory Game</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="timer" id="timer">Time: 0s</div>
+  <div class="game-header">
+    <h1>Memory Match Challenge</h1>
+    <div id="timer">⏱️ Time: 0s</div>
+  </div>
   <div class="game-board" id="gameBoard"></div>
 
-  <!-- Game Complete Popup -->
-  <div class="popup" id="winPopup">
+  <div id="winPopup" class="popup">
     <div class="popup-content">
-      <h2>Congratulations!</h2>
-      <p id="timeResult"></p>
+      <h2>🎉 You Won!</h2>
+      <p id="finalTime"></p>
       <button onclick="restartGame()">Play Again</button>
     </div>
   </div>
@@ -22,4 +24,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-    

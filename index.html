@@ -3,29 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Memory Game - Welcome</title>
+  <title>Memory Game</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="welcome-screen">
-    <h1>Welcome to the Memory Game!</h1>
-    <button id="playButton">Play</button>
+    <h1>🎮 Welcome to the Memory Game!</h1>
+    <button id="playBtn">Play</button>
   </div>
 
-  <!-- Rules Popup -->
-  <div class="popup" id="rulesPopup">
+  <div id="rulesPopup" class="popup">
     <div class="popup-content">
-      <h2>Game Rules</h2>
-      <p>Match all the cards by remembering their positions. Only two cards can be open at a time. Try to finish as fast as possible!</p>
-      <button id="skipButton">Skip</button>
+      <h2>📜 Rules</h2>
+      <ul>
+        <li>Find and match all pairs of cards.</li>
+        <li>Click on two cards to flip them.</li>
+        <li>Try to complete the game in minimum time.</li>
+      </ul>
+      <button id="skipBtn">Skip</button>
     </div>
   </div>
 
-  <!-- Impatient Popup -->
-  <div class="popup" id="impatientPopup">
+  <div id="impatientPopup" class="popup">
     <div class="popup-content">
-      <p>Here comes the impatient gamer! First read the rules properly 😅</p>
-      <button onclick="closeImpatientPopup()">OK</button>
+      <h2>😠 Impatient Gamer!</h2>
+      <p>Please read the rules properly before playing.</p>
+      <button id="impatientOkBtn">OK</button>
     </div>
   </div>
 
