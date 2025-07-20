@@ -4,71 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Memory Game - Welcome</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="welcome-screen">
-    <h1>🎮 Welcome to the Memory Challenge!</h1>
+    <h1>Welcome to the Memory Game!</h1>
     <button id="playButton">Play</button>
   </div>
 
   <!-- Rules Popup -->
   <div class="popup" id="rulesPopup">
-    <h2>📜 Game Rules</h2>
-    <p>
-      Match all the 64 cards as quickly as possible.<br/>
-      Click two cards to flip. If they match, they stay open.<br/>
-      Finish the game fast to set a high score! 💥
-    </p>
-    <button id="skipRules">Skip</button>
+    <div class="popup-content">
+      <h2>Game Rules</h2>
+      <p>Match all the cards by remembering their positions. Only two cards can be open at a time. Try to finish as fast as possible!</p>
+      <button id="skipButton">Skip</button>
+    </div>
   </div>
 
   <!-- Impatient Popup -->
   <div class="popup" id="impatientPopup">
-    <h2>😅 Hold on!</h2>
-    <p>Here comes the impatient gamer! Please read the rules first.</p>
-    <button id="backToRules">Back to Rules</button>
+    <div class="popup-content">
+      <p>Here comes the impatient gamer! First read the rules properly 😅</p>
+      <button onclick="closeImpatientPopup()">OK</button>
+    </div>
   </div>
 
-  <script>
-    let rulesShownOnce = false;
-    const playBtn = document.getElementById("playButton");
-    const rulesPopup = document.getElementById("rulesPopup");
-    const impatientPopup = document.getElementById("impatientPopup");
-    const skipBtn = document.getElementById("skipRules");
-    const backBtn = document.getElementById("backToRules");
-
-    let skipClickedTime = 0;
-
-    playBtn.addEventListener("click", () => {
-      document.querySelector(".welcome-screen").style.display = "none";
-      rulesPopup.style.display = "flex";
-      skipClickedTime = 0;
-    });
-
-    skipBtn.addEventListener("click", () => {
-      const timeNow = Date.now();
-      if (!skipClickedTime) {
-        skipClickedTime = timeNow;
-        setTimeout(() => {
-          if (!rulesShownOnce) {
-            rulesPopup.style.display = "none";
-            impatientPopup.style.display = "flex";
-          }
-        }, 100);
-      } else if (timeNow - skipClickedTime < 5000) {
-        rulesPopup.style.display = "none";
-        impatientPopup.style.display = "flex";
-      } else {
-        rulesShownOnce = true;
-        window.location.href = "game.html";
-      }
-    });
-
-    backBtn.addEventListener("click", () => {
-      impatientPopup.style.display = "none";
-      rulesPopup.style.display = "flex";
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

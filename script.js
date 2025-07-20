@@ -1,75 +1,127 @@
-const grid = document.getElementById("gameGrid");
-const restartBtn = document.getElementById("restartBtn");
-const timerDisplay = document.getElementById("timer");
-const finishPopup = document.getElementById("finishPopup");
-const finalTime = document.getElementById("finalTime");
+// --- WELCOME SCREEN + RULES LOGIC ---
+let skipClickedAt = null;
+let rulesShownOnce = false;
 
-let timer = 0;
-let interval;
-let flippedCards = [];
-let matched = 0;
-const totalPairs = 32;
+document.addEventListener("DOMContentLoaded", () => {
+  const playBtn = document.getElementById("playButton");
+  const skipBtn = document.getElementById("skipButton");
+  const rulesPopup = document.getElementById("rulesPopup");
+  const impatientPopup = document.getElementById("impatientPopup");
 
-const emojis = ['🍕','🎈','🚀','🎮','🎧','📱','🐶','🦄','🍭','🎉','🧠','🌈','🍩','🐼','💎','🐱',
-                '🍎','🐯','🐸','⚽','🎲','🍫','🌟','🍔','📷','📚','🎤','🪐','📀','🧸','🐵','💡'];
+  if (playBtn) {
+    playBtn.onclick = () => {
+      rulesPopup.style.display = "flex";
+      skipClickedAt = Date.now(); // record when popup was shown
+    };
+  }
 
-function startGame() {
-  // Reset
-  grid.innerHTML = '';
-  matched = 0;
-  flippedCards = [];
-  timer = 0;
-  timerDisplay.textContent = `⏱️ Time: 0s`;
-  clearInterval(interval);
-  interval = setInterval(() => {
-    timer++;
-    timerDisplay.textContent = `⏱️ Time: ${timer}s`;
-  }, 1000);
+  if (skipBtn) {
+    skipBtn.onclick = () => {
+      const now = Date.now();
+      const timeSpent = (now - skipClickedAt) / 1000;
 
-  // Duplicate + Shuffle
-  const fullSet = [...emojis, ...emojis];
-  const shuffled = fullSet.sort(() => 0.5 - Math.random());
+      if (!rulesShownOnce && timeSpent < 5) {
+        impatientPopup.style.display = "flex";
+      } else {
+        window.location.href = "game.html";
+      }
 
-  shuffled.forEach(icon => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.textContent = icon;
-    card.dataset.icon = icon;
-    card.addEventListener("click", () => flipCard(card));
-    grid.appendChild(card);
-  });
+      rulesShownOnce = true;
+      rulesPopup.style.display = "none";
+    };
+  }
+});
+
+function closeImpatientPopup() {
+  document.getElementById("impatientPopup").style.display = "none";
 }
 
-function flipCard(card) {
-  if (flippedCards.length < 2 && !card.classList.contains("flipped")) {
-    card.classList.add("flipped");
-    flippedCards.push(card);
+// --- GAME LOGIC ---
+const icons = ['🍎', '🚀', '🐶', '🎮', '🎲', '🚗', '🎧', '📱', '🐱', '🍩', '📚', '✈️', '🧸', '🪐', '🎁', '💡',
+               '🍕', '⚽', '🏀', '🏓', '🎹', '📷', '🎤', '🔒', '🔑', '💻', '🌈', '🌍', '🧠', '💎', '🌟', '🎈'];
 
-    if (flippedCards.length === 2) {
-      const [c1, c2] = flippedCards;
-      if (c1.dataset.icon === c2.dataset.icon) {
-        matched++;
-        flippedCards = [];
-        if (matched === totalPairs) {
-          clearInterval(interval);
-          finishPopup.style.display = "block";
-          finalTime.textContent = `You completed the game in ${timer} seconds! 🎯`;
+let timerInterval;
+let startTime;
+
+if (window.location.pathname.includes("game.html")) {
+  const board = document.getElementById("gameBoard");
+  const timerDisplay = document.getElementById("timer");
+  const winPopup = document.getElementById("winPopup");
+  const timeResult = document.getElementById("timeResult");
+
+  const cards = [...icons, ...icons]; // 32 unique x 2 = 64 cards
+  shuffle(cards);
+
+  let firstCard = null;
+  let secondCard = null;
+  let lockBoard = false;
+  let matchedCount = 0;
+
+  cards.forEach(icon => {
+    const div = document.createElement("div");
+    div.classList.add("card", "hidden");
+    div.dataset.icon = icon;
+    div.textContent = icon;
+    div.addEventListener("click", handleCardClick);
+    board.appendChild(div);
+  });
+
+  function handleCardClick(e) {
+    const card = e.target;
+
+    if (lockBoard || !card.classList.contains("hidden")) return;
+
+    card.classList.remove("hidden");
+
+    if (!firstCard) {
+      firstCard = card;
+    } else {
+      secondCard = card;
+      lockBoard = true;
+
+      if (firstCard.dataset.icon === secondCard.dataset.icon) {
+        firstCard.classList.add("matched");
+        secondCard.classList.add("matched");
+        matchedCount += 2;
+        resetTurn();
+        if (matchedCount === cards.length) {
+          clearInterval(timerInterval);
+          winPopup.style.display = "flex";
+          timeResult.textContent = `You completed the game in ${Math.floor((Date.now() - startTime) / 1000)} seconds!`;
         }
       } else {
         setTimeout(() => {
-          c1.classList.remove("flipped");
-          c2.classList.remove("flipped");
-          flippedCards = [];
-        }, 800);
+          firstCard.classList.add("hidden");
+          secondCard.classList.add("hidden");
+          resetTurn();
+        }, 700);
       }
     }
   }
+
+  function resetTurn() {
+    [firstCard, secondCard] = [null, null];
+    lockBoard = false;
+  }
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      timerDisplay.textContent = `Time: ${elapsed}s`;
+    }, 1000);
+  }
+
+  startTimer();
 }
 
 function restartGame() {
-  finishPopup.style.display = "none";
-  startGame();
+  window.location.href = "game.html";
 }
-
-restartBtn.addEventListener("click", restartGame);
-window.onload = startGame;
